@@ -1,0 +1,19 @@
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
+from PyQt5.QtGui import QPixmap
+
+class MapWidget(QGraphicsView):
+    def __init__(self):
+        super().__init__()
+        self.scene = QGraphicsScene(self)
+        self.setScene(self.scene)
+        self.map_item = None
+
+    def update_map(self, qimage):
+        pixmap = QPixmap.fromImage(qimage)
+
+        if self.map_item is None:
+            self.map_item = self.scene.addPixmap(pixmap)
+        else:
+            self.map_item.setPixmap(pixmap)
+
+        self.setSceneRect(pixmap.rect())
