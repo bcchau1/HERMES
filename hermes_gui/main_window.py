@@ -36,17 +36,16 @@ import sys
 #         layout.addWidget(self.map_widget)
 
 #         # Connect ROS signal
-#         ros.map_updated.connect(self.map_widget.update_map)
 
 class MainWindow(QMainWindow):
     def __init__(self, ros):
         super().__init__()
 
-        self.setWindowTitle("HERMES")
+        self.setWindowTitle(" ")
 
         # adjust display size to current display 
         screen = QGuiApplication.primaryScreen().availableGeometry()
-        self.resize(int(screen.width() * 0.8), int(screen.height() * 0.8))
+        self.resize(int(screen.width() * 0.9), int(screen.height() * 0.9))
 
         # must set central widget when using QMainWindow
         central = QWidget()
@@ -56,7 +55,7 @@ class MainWindow(QMainWindow):
         main_layout.setSpacing(15)
 
         main_layout.addWidget(self.build_left_panel(), 1)
-        main_layout.addWidget(self.build_right_panel(), 1)
+        main_layout.addWidget(self.build_right_panel(), 2)
 
     def build_left_panel(self):
         panel = QWidget()
@@ -71,29 +70,38 @@ class MainWindow(QMainWindow):
 
         # Stats row
         stats_layout = QHBoxLayout()
-        stats_layout.addWidget(self.stat_box("Number of Robots", "2"))
+        stats_layout.addWidget(self.stat_box("Number of Robots", "0"))
         stats_layout.addWidget(self.stat_box("Number of Victims", "0"))
         layout.addLayout(stats_layout)
 
-        # Legend
-        legend = QLabel("🔴 Robot\n🔵 Person")
-        legend.setFrameShape(QFrame.Box)
-        legend.setAlignment(Qt.AlignLeft)
-        layout.addWidget(legend)
+        # Camera View
+        camera_layout = QVBoxLayout()
+        camera_layout.setSpacing(2)
+        camera_label = QLabel("Camera Image")
+        camera_label.setAlignment(Qt.AlignCenter)
+        camera_view = QLabel("Camera Display Area")
+        camera_view.setAlignment(Qt.AlignCenter)
+        camera_view.setFrameShape(QFrame.Box)
+        camera_layout.addWidget(camera_label)
+        camera_layout.addWidget(camera_view, 1)
+        layout.addLayout(camera_layout)
 
-        # Console
+        # Console 
+        console_layout = QVBoxLayout()
+        console_layout.setSpacing(2)
         console_label = QLabel("Console")
-        layout.addWidget(console_label)
-
+        console_label.setAlignment(Qt.AlignCenter)
         self.console = QTextEdit()
         self.console.setReadOnly(True)
-        layout.addWidget(self.console, 1)
-
+        console_layout.addWidget(console_label)
+        console_layout.addWidget(self.console, 1)
+        layout.addLayout(console_layout)
+        
         # Buttons
         button_layout = QHBoxLayout()
-        button_layout.addWidget(QPushButton("Start"))
-        button_layout.addWidget(QPushButton("End"))
-        button_layout.addWidget(QPushButton("Reset"))
+        button_layout.addWidget(self.create_button("Start"))
+        button_layout.addWidget(self.create_button("End"))
+        button_layout.addWidget(self.create_button("Reset"))
         layout.addLayout(button_layout)
 
         return panel
@@ -134,6 +142,25 @@ class MainWindow(QMainWindow):
         map_view.setAlignment(Qt.AlignCenter)
         map_view.setFrameShape(QFrame.Box)
         map_view.setMinimumSize(400, 400)
+        layout.addWidget(map_view, 2)
 
-        layout.addWidget(map_view, 1)
+
         return panel
+
+    def create_button(self, text):
+        button = QPushButton(text)
+        button.setStyleSheet("""
+            QPushButton {
+                background-color: #b7c4cc;
+                border: none;
+                padding: 10px;
+                text-align: center;
+                font-size: 14px;
+                margin: 4px 2px;
+                border-radius: 10px;
+            }
+            QPushButton:hover {
+                background-color: #a4b0b7;
+            }
+        """)
+        return button
