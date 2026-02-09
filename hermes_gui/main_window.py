@@ -6,36 +6,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtCore import Qt
 import sys
-
-# from PyQt5.QtWidgets import (
-#     QMainWindow,
-#     QWidget,
-#     QHBoxLayout,
-#     QVBoxLayout,
-#     QLabel, 
-# )
-# from PyQt5.QtGui import QGuiApplication
-# from map_widget import MapWidget
-
-# class MainWindow(QMainWindow):
-#     def __init__(self, ros):
-#         super().__init__()
-
-#         self.setWindowTitle("HERMES")
-
-#         # adjust GUI size according to current display
-#         screen = QGuiApplication.primaryScreen().availableGeometry()
-#         self.resize(int(screen.width() * 0.8), int(screen.height() * 0.8))
-
-#         central = QWidget()
-#         self.setCentralWidget(central)
-
-#         layout = QVBoxLayout(central)
-
-#         self.map_widget = MapWidget()
-#         layout.addWidget(self.map_widget)
-
-#         # Connect ROS signal
+from map_widget import MapWidget
 
 class MainWindow(QMainWindow):
     def __init__(self, ros):
@@ -55,7 +26,7 @@ class MainWindow(QMainWindow):
         main_layout.setSpacing(15)
 
         main_layout.addWidget(self.build_left_panel(), 1)
-        main_layout.addWidget(self.build_right_panel(), 2)
+        main_layout.addWidget(self.build_right_panel(ros), 2)
 
     def build_left_panel(self):
         panel = QWidget()
@@ -129,21 +100,20 @@ class MainWindow(QMainWindow):
 
         return box
 
-    def build_right_panel(self):
+    def build_right_panel(self, ros):
         panel = QWidget()
         layout = QVBoxLayout(panel)
+        layout.setSpacing(2)
 
-        label = QLabel("Occupancy Grid")
+        label = QLabel("Environment Mapping")
         label.setAlignment(Qt.AlignCenter)
         layout.addWidget(label)
 
-        # Placeholder – later replace with QGraphicsView or ROS image feed
-        map_view = QLabel("Map Display Area")
-        map_view.setAlignment(Qt.AlignCenter)
-        map_view.setFrameShape(QFrame.Box)
-        map_view.setMinimumSize(400, 400)
-        layout.addWidget(map_view, 2)
-
+        # create map widget and connect ROS signal
+        map_widget = MapWidget()
+        map_widget.setFrameShape(QFrame.Box)
+        layout.addWidget(map_widget, 2)
+        ros.map_updated.connect(map_widget.update_map)
 
         return panel
 
