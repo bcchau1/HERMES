@@ -1,0 +1,3 @@
+[submodule "HERMES-percept"]
+	path = HERMES-percept
+	url = https://github.com/numbersletter/HERMES-percept.git
