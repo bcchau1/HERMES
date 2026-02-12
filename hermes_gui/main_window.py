@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtCore import Qt
-import sys
 from map_widget import MapWidget
 
 class MainWindow(QMainWindow):

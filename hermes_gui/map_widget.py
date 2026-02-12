@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QSizePolicy
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt, QRectF
 
 class MapWidget(QGraphicsView):
     def __init__(self):
@@ -16,4 +17,5 @@ class MapWidget(QGraphicsView):
         else:
             self.map_item.setPixmap(pixmap)
 
-        self.setSceneRect(pixmap.rect())
+        self.setSceneRect(QRectF(pixmap.rect()))
+        self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
