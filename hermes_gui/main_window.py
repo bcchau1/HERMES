@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
 
         # Stats row
         stats_layout = QHBoxLayout()
-        stats_layout.addWidget(self.stat_box("Number of Robots", "0"))
+        stats_layout.addWidget(self.stat_box("Robot Status", "Off"))
         stats_layout.addWidget(self.stat_box("Number of Victims", "0"))
         layout.addLayout(stats_layout)
 
