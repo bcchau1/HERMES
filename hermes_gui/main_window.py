@@ -21,6 +21,8 @@ class MainWindow(QMainWindow):
         central = QWidget()
         self.setCentralWidget(central)
 
+        self.map_widget = MapWidget()
+
         main_layout = QHBoxLayout(central)
         main_layout.setSpacing(15)
 
@@ -69,9 +71,17 @@ class MainWindow(QMainWindow):
         
         # Buttons
         button_layout = QHBoxLayout()
-        button_layout.addWidget(self.create_button("Start"))
-        button_layout.addWidget(self.create_button("End"))
-        button_layout.addWidget(self.create_button("Reset"))
+        start = self.create_button("Start")
+        button_layout.addWidget(start)
+       
+        end = self.create_button("End")
+        button_layout.addWidget(end)
+      
+        reset = self.create_button("Reset")
+        button_layout.addWidget(reset)
+        reset.clicked.connect(lambda: (self.map_widget.reset_map(), 
+                                       self.update_console("Resetting map...")))
+        
         layout.addLayout(button_layout)
 
         return panel
@@ -109,10 +119,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(label)
 
         # create map widget and connect ROS signal
-        map_widget = MapWidget()
-        map_widget.setFrameShape(QFrame.Box)
-        layout.addWidget(map_widget, 2)
-        ros.map_updated.connect(map_widget.update_map)
+        self.map_widget.setFrameShape(QFrame.Box)
+        layout.addWidget(self.map_widget, 2)
+        ros.map_updated.connect(self.map_widget.update_map)
 
         return panel
 
@@ -133,3 +142,6 @@ class MainWindow(QMainWindow):
             }
         """)
         return button
+
+    def update_console(self, text):
+        self.console.append(text)

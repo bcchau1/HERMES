@@ -19,3 +19,7 @@ class MapWidget(QGraphicsView):
 
         self.setSceneRect(QRectF(pixmap.rect()))
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
+
+    def reset_map(self):
+        self.scene.clear()
+        self.map_item = None
