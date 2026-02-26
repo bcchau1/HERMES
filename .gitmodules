@@ -4,3 +4,6 @@
 [submodule "HERMES-driver"]
 	path = HERMES-driver
 	url = git@github.com:numbersletter/HERMES-driver.git
+[submodule "HERMES-bringup"]
+	path = HERMES-bringup
+	url = git@github.com:numbersletter/HERMES-bringup.git
