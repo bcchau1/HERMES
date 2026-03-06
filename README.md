@@ -1,7 +1,7 @@
 # HERMES - Hazardous Environment Reconnaissance and Mapping Exploration System
 
-This project comprises of a system that can be deployed on a cheap Raspberry Pi robot
-to explore and find victims in environemtns that may be too hazardous for rescuers to fully explore.
+This project comprises of a system that can be deployed on a cheap Raspberry Pi 5 robot
+to explore and find victims in environments that may be too hazardous for rescuers to fully explore.
 The core of HERMES is architected on ROS 2, utilizing packages that contain nodes that execute the 
 desired behavior.
 
