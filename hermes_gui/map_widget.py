@@ -1,5 +1,4 @@
-import math
-from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QRectF
 from map_utils import RobotMarker, world_to_pixel
