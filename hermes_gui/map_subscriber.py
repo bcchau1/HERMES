@@ -1,11 +1,15 @@
 from rclpy.node import Node
 from nav_msgs.msg import OccupancyGrid
 from map_utils import occupancy_grid_to_qimage
+from tf2_ros import Buffer, TransformListener
+import rclpy
 
 class MapSubscriber(Node):
-    def __init__(self, map_signal):
+    def __init__(self, map_signal, pose_signal):
         super().__init__('map_subscriber')
         self.map_signal = map_signal
+        self.pose_signal = pose_signal
+        self.latest_map_info = None
 
         self.sub = self.create_subscription(
             OccupancyGrid,
@@ -14,7 +18,24 @@ class MapSubscriber(Node):
             10
         )
 
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(self.tf_buffer, self)
+        self.timer = self.create_timer(0.05, self.get_robot_pose)
+
     def map_callback(self, msg):
-        # convert occupancy grid message to a Qt image
-        qimage = occupancy_grid_to_qimage(msg)
+        self.latest_map_info = msg
+        qimage = occupancy_grid_to_qimage(self.latest_map_info)
         self.map_signal.emit(qimage)
+
+    def get_robot_pose(self):
+        if self.latest_map_info is None:
+            return
+        try:
+            t = self.tf_buffer.lookup_transform(
+                "map",          # target frame 
+                "base_link",    # source frame 
+                rclpy.time.Time()
+            )
+            self.pose_signal.emit((t.transform, self.latest_map_info))
+        except:
+            return
