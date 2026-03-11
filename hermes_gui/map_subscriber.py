@@ -1,6 +1,6 @@
 from rclpy.node import Node
 from nav_msgs.msg import OccupancyGrid
-from map_utils import occupancy_grid_to_qimage
+from utils.map_utils import occupancy_grid_to_qimage
 from tf2_ros import Buffer, TransformListener
 import rclpy
 
