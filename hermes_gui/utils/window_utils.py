@@ -42,6 +42,9 @@ def create_button(text):
         QPushButton:hover {
             background-color: #a4b0b7;
         }
+        QPushButton:disabled {
+            background-color: #d3d3d3;
+        }
     """)
     return button
 

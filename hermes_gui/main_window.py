@@ -7,6 +7,7 @@ from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtCore import Qt
 from map_widget import MapWidget
 from utils.window_utils import create_button, update_console, stat_box
+from utils.ros_launcher import LaunchThread
 
 class MainWindow(QMainWindow):
     def __init__(self, ros):
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         self.map_widget = MapWidget()
+        self.launch_thread = LaunchThread()
 
         main_layout = QHBoxLayout(central)
         main_layout.setSpacing(15)
@@ -72,9 +74,17 @@ class MainWindow(QMainWindow):
         
         # Buttons
         button_layout = QHBoxLayout()
+
+        launch = create_button("Launch") 
+        button_layout.addWidget(launch)
+
         start = create_button("Start")
+        start.setEnabled(False)
         button_layout.addWidget(start)
        
+        launch.clicked.connect(lambda: (update_console(self.console, "Launching nodes..."), self.start_launch()))
+        self.launch_thread.finished_launch.connect(lambda: (start.setEnabled(True), launch.setEnabled(False)))
+
         end = create_button("End")
         button_layout.addWidget(end)
       
@@ -103,3 +113,6 @@ class MainWindow(QMainWindow):
         ros.pose_updated.connect(self.map_widget.update_pose)
 
         return panel
+
+    def start_launch(self):
+        self.launch_thread.start()
