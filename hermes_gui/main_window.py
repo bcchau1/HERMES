@@ -15,6 +15,17 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle(" ")
 
+        '''
+        LAUNCH: SSH's into the HERMES robot, then runs the bringup launch file to start the camera, LiDAR, and SLAM
+        START: Begins robot operation and movement. 
+        END: Stops the robot operation.
+        RESET: Resets map and returns robot to initial state.
+        '''
+        self.launch_button = None
+        self.start_button = None
+        self.end_button = None
+        self.reset_button = None
+
         # adjust display size to current display 
         screen = QGuiApplication.primaryScreen().availableGeometry()
         self.resize(int(screen.width() * 0.9), int(screen.height() * 0.9))
@@ -75,23 +86,26 @@ class MainWindow(QMainWindow):
         # Buttons
         button_layout = QHBoxLayout()
 
-        launch = create_button("Launch") 
-        button_layout.addWidget(launch)
+        self.launch_button = create_button("Launch") 
+        button_layout.addWidget(self.launch_button)
 
-        start = create_button("Start")
-        start.setEnabled(False)
-        button_layout.addWidget(start)
+        self.start_button = create_button("Start")
+        self.start_button.setEnabled(False)
+        button_layout.addWidget(self.start_button)
        
-        launch.clicked.connect(lambda: (update_console(self.console, "Launching nodes..."), self.start_launch()))
-        self.launch_thread.finished_launch.connect(lambda: (start.setEnabled(True), launch.setEnabled(False)))
+        self.launch_button.clicked.connect(self.launch_start)
+        self.launch_thread.status.connect(lambda msg: update_console(self.console, msg))
+        self.launch_thread.error.connect(lambda msg: update_console(self.console, f"Error: {msg}"))
+        self.launch_thread.finished.connect(self.launch_finished)
 
-        end = create_button("End")
-        button_layout.addWidget(end)
+        self.end_button = create_button("End")
+        self.end_button.setEnabled(False)
+        button_layout.addWidget(self.end_button)
       
-        reset = create_button("Reset")
-        button_layout.addWidget(reset)
-        reset.clicked.connect(lambda: (self.map_widget.reset_map(), 
-                                       update_console(self.console, "Resetting...")))
+        self.reset_button = create_button("Reset")
+        self.reset_button.setEnabled(False)
+        button_layout.addWidget(self.reset_button)
+        self.reset_button.clicked.connect(self.reset_clicked)
         
         layout.addLayout(button_layout)
 
@@ -114,5 +128,22 @@ class MainWindow(QMainWindow):
 
         return panel
 
-    def start_launch(self):
+    def launch_start(self):
+        update_console(self.console, "Beginning launch...")
         self.launch_thread.start()
+    
+    def reset_clicked(self):
+        self.console.clear()
+        update_console(self.console, "Resetting...")
+        self.map_widget.reset_map()
+        self.launch_button.setEnabled(True)
+        self.start_button.setEnabled(False)
+        self.end_button.setEnabled(False)
+        self.reset_button.setEnabled(False)
+
+    def launch_finished(self):
+        update_console(self.console, "Launch finished.")
+        self.launch_button.setEnabled(False)
+        self.start_button.setEnabled(True)
+        self.end_button.setEnabled(True) 
+        self.reset_button.setEnabled(True) 
