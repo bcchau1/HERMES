@@ -2,7 +2,7 @@ import sys
 import rclpy
 from PyQt5.QtWidgets import QApplication
 from main_window import MainWindow
-from ros_interface import RosInterface
+from ros.ros_interface import RosInterface
 
 def main():
     rclpy.init()

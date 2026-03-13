@@ -1,6 +1,6 @@
 import threading
 from PyQt5.QtCore import QObject, pyqtSignal
-from map_subscriber import MapSubscriber
+from ros.map_subscriber import MapSubscriber
 import rclpy
 
 class RosInterface(QObject):

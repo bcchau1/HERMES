@@ -5,9 +5,9 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtCore import Qt
-from map_widget import MapWidget
+from widgets.map_widget import MapWidget
 from utils.window_utils import create_button, update_console, stat_box
-from utils.ros_launcher import LaunchThread
+from ros.launcher import LaunchThread
 
 class MainWindow(QMainWindow):
     def __init__(self, ros):

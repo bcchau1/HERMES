@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QRectF
-from utils.map_utils import RobotMarker, VictimMarker, world_to_pixel
+from widgets.map_markers import RobotMarker, VictimMarker
+from utils.map_utils import world_to_pixel
 from math import atan2, degrees
 
 class MapWidget(QGraphicsView):
