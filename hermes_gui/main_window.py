@@ -95,8 +95,8 @@ class MainWindow(QMainWindow):
        
         self.launch_button.clicked.connect(self.launch_start)
         self.launch_thread.status.connect(lambda msg: update_console(self.console, msg))
-        self.launch_thread.error.connect(lambda msg: update_console(self.console, f"Error: {msg}"))
-        self.launch_thread.finished.connect(self.launch_finished)
+        self.launch_thread.finished_launch.connect(self.launch_finished)
+        self.launch_thread.error.connect(self.launch_failed)
 
         self.end_button = create_button("End")
         self.end_button.setEnabled(False)
@@ -130,6 +130,7 @@ class MainWindow(QMainWindow):
 
     def launch_start(self):
         update_console(self.console, "Beginning launch...")
+        self.launch_button.setEnabled(False)
         self.launch_thread.start()
     
     def reset_clicked(self):
@@ -147,3 +148,10 @@ class MainWindow(QMainWindow):
         self.start_button.setEnabled(True)
         self.end_button.setEnabled(True) 
         self.reset_button.setEnabled(True) 
+
+    def launch_failed(self, msg):
+        update_console(self.console, f"ERROR: {msg}")
+        self.launch_button.setEnabled(True)
+        self.start_button.setEnabled(False)
+        self.end_button.setEnabled(False)
+        self.reset_button.setEnabled(False)
