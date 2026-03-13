@@ -25,7 +25,7 @@ class MapSubscriber(Node):
     def map_callback(self, msg):
         self.latest_map_info = msg
         qimage = occupancy_grid_to_qimage(self.latest_map_info)
-        self.map_signal.emit(qimage)
+        self.map_signal.emit((qimage, self.latest_map_info))
 
     def get_robot_pose(self):
         if self.latest_map_info is None:

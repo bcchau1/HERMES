@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsItem
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 from PyQt5.QtGui import QPainter, QColor, QPolygonF, QBrush
 from PyQt5.QtCore import QPointF, Qt
 from math import radians, sin, cos
@@ -27,8 +27,8 @@ class RobotMarker(QGraphicsItem):
         painter.setBrush(QColor("blue"))
         painter.drawPolygon(self.triangle)
 
-class VictimMarker(QGraphicsItem):
-    def __init__(self, size):
+class VictimMarker(QGraphicsObject):
+    def __init__(self, size, victim_id):
         super().__init__()
         self.size = size
         

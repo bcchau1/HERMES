@@ -11,10 +11,26 @@ class MapWidget(QGraphicsView):
         self.scene = QGraphicsScene(self)
         self.setScene(self.scene)
         self.map_item = None
+        self.occupancy_grid = None
 
         self.robot_marker = RobotMarker(size=4)
+        
+        '''
+        Dictionary to store victim markers. This allows for easier recompute of coordinates
+        when the map is updated.
 
-    def update_map(self, qimage):
+        self.victims = {
+            victim_id: {
+                "marker": VictimMarker,
+                "world": (x, y)
+            }
+        }
+        '''
+        self.victims = {}
+        self.pending_victims = []
+
+    def update_map(self, payload):
+        qimage, self.occupancy_grid = payload
         pixmap = QPixmap.fromImage(qimage.mirrored(False, True))
 
         if self.map_item is None:
@@ -25,6 +41,8 @@ class MapWidget(QGraphicsView):
 
         self.setSceneRect(QRectF(pixmap.rect()))
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
+
+        self.update_victim_positions()
 
     def update_pose(self, payload):
         """Slot to receive (transform, occupancy_grid_msg) tuples from ROS.
@@ -61,3 +79,23 @@ class MapWidget(QGraphicsView):
             self.scene.removeItem(self.map_item)
             self.scene.removeItem(self.robot_marker)
             self.map_item = None
+
+    def add_victim(self, msg):
+        victim = VictimMarker(size=3)
+        victim_id = len(self.victims)
+        self.victims[victim_id] = {
+            "marker": victim,
+            "world": (msg.x, msg.y)
+        }
+
+        self.scene.addItem(victim)
+        self.update_victim_position()
+
+    def update_victim_positions(self):
+        if self.map_item is not None:
+            return
+
+        for victim in self.victims.values():
+            vx, vy = victim["world"]
+            px, py = world_to_pixel(vx, vy, self.occupancy_grid.info)
+            victim["marker"].setPos(px, py)

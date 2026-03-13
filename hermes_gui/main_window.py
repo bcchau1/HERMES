@@ -125,6 +125,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.map_widget, 2)
         ros.map_updated.connect(self.map_widget.update_map)
         ros.pose_updated.connect(self.map_widget.update_pose)
+        ros.victim_detected.connect(self.victim_found)
 
         return panel
 
@@ -155,3 +156,7 @@ class MainWindow(QMainWindow):
         self.start_button.setEnabled(False)
         self.end_button.setEnabled(False)
         self.reset_button.setEnabled(False)
+
+    def victim_found(self, msg):
+        update_console(self.console, f"Victim found at ({msg.x}, {msg.y})")
+        self.map_widget.add_victim(msg)
