@@ -1,5 +1,6 @@
 __pycache__
-install
-log
-build
 .github/
+/.vscode/
+/build/
+/install/
+/log/
